@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      database: tracking
+      uri: ${MONGODB_URI}
+  activemq:
+    broker-url: ${ACTIVEMQ_URL}
+app:
+  topic:
+    pricechanged: product.price.changed

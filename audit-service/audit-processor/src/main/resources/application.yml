@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      database: auditing
+      uri: ${MONGODB_URI}
+  activemq:
+    broker-url: ${ACTIVEMQ_URL}
+app:
+  topic:
+    audit: audit

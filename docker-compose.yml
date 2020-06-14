@@ -1,0 +1,91 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    networks:
+      - nab
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    networks:
+      - nab
+  activemq:
+    image: rmohr/activemq
+    ports:
+      - 61616:61616
+      - 8161:8161
+    networks:
+      - nab
+  product-order-webservice:
+    build:
+      context: ./product-service/product-webservice
+      dockerfile: Dockerfile
+    ports:
+      - 9000:8080
+    environment:
+      SQL_HOST: mysql:3306
+      SQL_USER: root
+      SQL_PASS: root
+      ACTIVEMQ_URL: tcp://activemq:61616
+    depends_on:
+      - mysql
+      - activemq
+    networks:
+      - nab
+  product-price-tracking-processor:
+    build:
+      context: ./tracking-service/product-price-tracking-processor
+      dockerfile: Dockerfile
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+      ACTIVEMQ_URL: tcp://activemq:61616
+    depends_on:
+      - mongodb
+      - activemq
+    networks:
+      - nab
+  audit-processor:
+    build:
+      context: ./audit-service/audit-processor
+      dockerfile: Dockerfile
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+      ACTIVEMQ_URL: tcp://activemq:61616
+    depends_on:
+      - mongodb
+      - activemq
+    networks:
+      - nab
+  tracking-webservice:
+    build:
+      context: ./tracking-service/tracking-webservice
+      dockerfile: Dockerfile
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+    depends_on:
+      - mongodb
+      - activemq
+    networks:
+      - nab
+      
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      - tracking-webservice
+      - product-order-webservice
+    networks:
+      - nab
+networks:
+  nab:
+    driver: bridge

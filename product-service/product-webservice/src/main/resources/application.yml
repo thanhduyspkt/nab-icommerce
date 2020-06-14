@@ -1,0 +1,15 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /product-order-webservice
+spring:
+  datasource:
+    url: jdbc:mysql://${SQL_HOST}/product
+    username: ${SQL_USER}
+    password: ${SQL_PASS}
+  activemq:
+    broker-url: ${ACTIVEMQ_URL}
+app:
+  topic:
+    pricechanged: product.price.changed
+    audit: audit
