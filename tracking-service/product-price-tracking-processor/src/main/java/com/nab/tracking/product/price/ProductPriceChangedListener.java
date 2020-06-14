@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
-import sun.dc.pr.PRError;
-
 import java.io.IOException;
 
 import javax.jms.JMSException;
