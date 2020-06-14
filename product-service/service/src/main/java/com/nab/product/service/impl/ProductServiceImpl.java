@@ -68,9 +68,15 @@ public class ProductServiceImpl implements ProductService {
         log.info("update: id={}, product={}", id, product);
         final Product currentProduct = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("id=" + id + " is not existed."));
 
-        currentProduct.setName(product.getName());
-        currentProduct.setBrand(product.getBrand());
-        currentProduct.setColor(product.getColor());
+        if (!StringUtils.isEmpty(product.getName())) {
+            currentProduct.setName(product.getName());
+        }
+        if (!StringUtils.isEmpty(product.getBrand())) {
+            currentProduct.setBrand(product.getBrand());
+        }
+        if (!StringUtils.isEmpty(product.getColor())) {
+            currentProduct.setColor(product.getColor());
+        }
 
         PriceChangedDTO priceChanged = null;
 
