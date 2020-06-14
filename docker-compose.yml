@@ -12,8 +12,15 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
+    networks:
+      - nab
+  flyway:
+    image: boxfuse/flyway
     volumes:
-      - ./mysql:/docker-entrypoint-initdb.d
+      - "./mysql:/flyway/sql"
+    depends_on: 
+      - mysql
+    command: -url=jdbc:mysql://mysql:3306/test?verifyServerCertificate=false&useSSL=true -schemas=test -user=root -password=root migrate
     networks:
       - nab
   activemq:
@@ -35,7 +42,7 @@ services:
       SQL_PASS: root
       ACTIVEMQ_URL: tcp://activemq:61616
     depends_on:
-      - mysql
+      - flyway
       - activemq
     networks:
       - nab
@@ -74,7 +81,6 @@ services:
       - activemq
     networks:
       - nab
-      
   nginx:
     build:
       context: ./nginx
