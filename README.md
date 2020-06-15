@@ -5,6 +5,7 @@
 - Using docker as running environment of services
 <br/>
 ### Step to run on local machine
+#### Install maven & docker before run below commands
 - mvn install
 - docker-compose build
 - docker-compose up
