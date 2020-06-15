@@ -7,9 +7,12 @@ services:
     networks:
       - nab
   mysql:
-    image: mysql:5.7
+    image: mysql:latest
+    ports:
+      - 3306:3306
     volumes:
-      - ./mysql/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
+      - ./mysql:/tmp/database
+    command: mysqld --init-file="/tmp/database/setup.sql"
     environment:
       MYSQL_ROOT_PASSWORD: root
     networks:
